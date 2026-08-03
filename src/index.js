@@ -1,8 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
-import uploadRouter from "./src/route/upload.js";
-import { globalErrorHandle } from "./src/middleware/gloErrorHandle.js";
-import chatRouter from "./src/route/chat.js";
+import uploadRouter from "./route/upload.js";
+import { globalErrorHandle } from "./middleware/gloErrorHandle.js";
+import chatRouter from "./route/chat.js";
 
 dotenv.config();
 
