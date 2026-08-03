@@ -172,7 +172,7 @@ node testNow.js
 ```
 
 The script automatically:
-- Uploads a PDF
+- Uploads a PDF // Change the file path before running..
 - Waits until processing completes
 - Opens an interactive terminal chat
 
