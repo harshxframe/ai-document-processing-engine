@@ -24,7 +24,7 @@ The project is built with scalability in mind using a queue-based architecture s
 
 ## Architecture
 
-```text
+
                     Upload PDF
                          │
                          ▼
@@ -81,7 +81,6 @@ The project is built with scalability in mind using a queue-based architecture s
                          │
                          ▼
                   Final Response
-```
 
 ---
 
@@ -101,9 +100,9 @@ The project is built with scalability in mind using a queue-based architecture s
 
 The project currently uses
 
-```
+
 bge-m3
-```
+
 
 running locally through Ollama.
 
@@ -131,7 +130,7 @@ Semantic retrieval is filtered using the uploaded document id before sending the
 
 Document ingestion is completely asynchronous.
 
-```
+
 Upload
 
 ↓
@@ -149,7 +148,7 @@ Embedding
 ↓
 
 Vector Storage
-```
+
 
 This keeps upload latency low while heavy AI processing happens in the background.
 
@@ -159,21 +158,21 @@ This keeps upload latency low while heavy AI processing happens in the backgroun
 
 Create a `.env` file.
 
-```env
+env
 PORT=2020
 
 BASE_URL=
 
 AI_API_KEY=
-```
+
 
 ---
 
 ## Installation
 
-```bash
+bash
 npm install
-```
+
 
 Start Redis
 
@@ -183,15 +182,15 @@ Start Ollama
 
 Pull embedding model
 
-```bash
+bash
 ollama pull bge-m3
-```
+
 
 Run the application
 
-```bash
+bash
 npm run dev
-```
+
 
 ---
 
@@ -199,15 +198,15 @@ npm run dev
 
 A simple terminal client is included.
 
-```
+
 testNow.js
-```
+
 
 After starting the server, run
 
-```bash
+bash
 node testNow.js
-```
+
 
 The script
 
