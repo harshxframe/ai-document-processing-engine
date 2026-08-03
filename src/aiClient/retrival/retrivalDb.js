@@ -4,8 +4,6 @@ import { aiChat } from "../ai.js";
 import { systemPrompt } from "../../utils/systemprompt.js";
 
 export async function runChat(id, chat, query) {
-  console.log("Hello");
-  id = "7d2e76bd-c4e1-4cb2-8f77-7db65e71bf5e";
   const [queryEmbedding] = await embeddingProvider(["What happned in this"]);
   if (queryEmbedding.length <= 0) {
     throw new Error("Query not valid");
