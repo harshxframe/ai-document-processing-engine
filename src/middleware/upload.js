@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   },
 
   filename: (req, file, cb) => {
-    const documentId = getUniqueId;
+    const documentId = getUniqueId();
 
     // Make it available to the next middleware/controller
     req.documentId = documentId;
@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 export const upload = multer({
   storage,
   limits: {
-    fileSize: 20 * 1024 * 1024,
+    fileSize: 50 * 1024 * 1024,
   },
   fileFilter: (_, file, cb) => {
     if (file.mimetype !== "application/pdf") {
