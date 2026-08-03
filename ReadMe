@@ -24,7 +24,8 @@ The project is built with scalability in mind using a queue-based architecture s
 
 ## Architecture
 
-
+### Ingestion Pipeline
+```text
                     Upload PDF
                          │
                          ▼
@@ -57,11 +58,10 @@ The project is built with scalability in mind using a queue-based architecture s
                          │
                          ▼
                      Qdrant Database
+```
 
-
-========================================================
-
-
+### Retrieval & RAG Pipeline
+```text
                  User Question
                          │
                          ▼
@@ -81,48 +81,37 @@ The project is built with scalability in mind using a queue-based architecture s
                          │
                          ▼
                   Final Response
+```
 
 ---
 
 ## Tech Stack
 
-- Node.js
-- Express.js
-- Redis
-- BullMQ
-- Qdrant
-- Ollama
-- bge-m3 Embedding Model
+- **Runtime:** Node.js
+- **Framework:** Express.js
+- **Cache & Queue:** Redis, BullMQ
+- **Vector Database:** Qdrant
+- **LLM Engine:** Ollama (`bge-m3` Embedding Model)
 
 ---
 
 ## Embedding Model
 
-The project currently uses
-
-
-bge-m3
-
-
-running locally through Ollama.
-
-Embeddings are generated in batches before indexing into Qdrant.
+The project currently uses **bge-m3** running locally through Ollama. Embeddings are generated in batches before indexing into Qdrant.
 
 ---
 
 ## Vector Database
 
-This project uses **Qdrant** as the vector database.
+This project uses **Qdrant** as the vector database. Each indexed point stores:
 
-Each indexed point stores
+- `documentId`
+- `page`
+- `chunkIndex`
+- `text`
+- `embedding vector`
 
-- documentId
-- page
-- chunkIndex
-- text
-- embedding vector
-
-Semantic retrieval is filtered using the uploaded document id before sending the final context to the language model.
+Semantic retrieval is filtered using the uploaded document ID before sending the final context to the language model.
 
 ---
 
@@ -130,25 +119,9 @@ Semantic retrieval is filtered using the uploaded document id before sending the
 
 Document ingestion is completely asynchronous.
 
-
-Upload
-
-↓
-
-Queue
-
-↓
-
-Worker
-
-↓
-
-Embedding
-
-↓
-
-Vector Storage
-
+```text
+Upload ──> Queue ──> Worker ──> Embedding ──> Vector Storage
+```
 
 This keeps upload latency low while heavy AI processing happens in the background.
 
@@ -156,85 +129,72 @@ This keeps upload latency low while heavy AI processing happens in the backgroun
 
 ## Environment Variables
 
-Create a `.env` file.
+Create a `.env` file in the root directory:
 
-env
+```env
 PORT=2020
-
 BASE_URL=
-
 AI_API_KEY=
-
+```
 
 ---
 
-## Installation
+## Installation & Setup
 
-bash
-npm install
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
+2. **Start external services:**
+   - Start **Redis**
+   - Start **Qdrant**
+   - Start **Ollama**
 
-Start Redis
+3. **Pull the embedding model:**
+   ```bash
+   ollama pull bge-m3
+   ```
 
-Start Qdrant
-
-Start Ollama
-
-Pull embedding model
-
-bash
-ollama pull bge-m3
-
-
-Run the application
-
-bash
-npm run dev
-
+4. **Run the application:**
+   ```bash
+   npm run dev
+   ```
 
 ---
 
 ## Testing
 
-A simple terminal client is included.
+A simple terminal client `testNow.js` is included. After starting the server, run:
 
-
-testNow.js
-
-
-After starting the server, run
-
-bash
+```bash
 node testNow.js
+```
 
+The script automatically:
+- Uploads a PDF
+- Waits until processing completes
+- Opens an interactive terminal chat
 
-The script
-
-- uploads a PDF
-- waits until processing completes
-- opens an interactive terminal chat
-
-making it easy to test the complete RAG pipeline end-to-end.
+This makes it easy to test the complete RAG pipeline end-to-end.
 
 ---
 
 ## Future Improvements
 
-- Docker Compose setup
-- Streaming responses
-- Multi-user authentication
-- Multiple embedding providers
-- Multiple vector database support
+- Docker Compose setup for easy orchestration
+- Streaming responses for the chat API
+- Multi-user authentication & tenancy
+- Support for multiple embedding providers and vector databases
 - OCR support for scanned PDFs
-- Hybrid search
-- Metadata filtering
-- Horizontal worker scaling
-- Object storage support (S3, Cloud Storage)
+- Hybrid search (sparse/dense vectors) & metadata filtering
+- Horizontal scaling for BullMQ workers
+- Cloud object storage support (S3, Google Cloud Storage)
 
 ---
 
 ## Project Goal
 
-The goal of this project was to build a scalable Retrieval-Augmented Generation (RAG) pipeline instead of only creating a basic PDF chat application.
+The goal of this project was to build a scalable Retrieval-Augmented Generation (RAG) pipeline instead of only creating a basic PDF chat application. 
 
 The focus was on building a production-oriented ingestion pipeline using asynchronous workers, semantic indexing, and vector retrieval that can later be extended for large-scale deployments.
