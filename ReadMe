@@ -1,0 +1,241 @@
+# AI Document Processing Engine
+
+An asynchronous document processing engine that converts PDF documents into searchable vector embeddings and enables conversational question answering using Retrieval-Augmented Generation (RAG).
+
+The project is built with scalability in mind using a queue-based architecture so that document ingestion and user requests remain independent.
+
+---
+
+## Features
+
+- PDF Upload API
+- Background processing using BullMQ workers
+- PDF text extraction
+- Page cleaning & preprocessing
+- Intelligent text chunking
+- Local embedding generation using Ollama (bge-m3)
+- Vector storage with Qdrant
+- Semantic retrieval
+- Conversational document chat
+- Redis-based job status tracking
+- Temporary file cleanup after processing
+
+---
+
+## Architecture
+
+```text
+                    Upload PDF
+                         │
+                         ▼
+                 Express Upload API
+                         │
+                         ▼
+                  Store Job Status
+                       (Redis)
+                         │
+                         ▼
+                    BullMQ Queue
+                         │
+                         ▼
+                Background Worker
+                         │
+                         ▼
+                  PDF Text Parser
+                         │
+                         ▼
+                 Clean & Normalize
+                         │
+                         ▼
+                    Text Chunking
+                         │
+                         ▼
+              Ollama Embeddings (bge-m3)
+                         │
+                         ▼
+                  Batch Vector Indexing
+                         │
+                         ▼
+                     Qdrant Database
+
+
+========================================================
+
+
+                 User Question
+                         │
+                         ▼
+                Generate Embedding
+                         │
+                         ▼
+             Semantic Search (Qdrant)
+                         │
+                         ▼
+             Retrieve Relevant Chunks
+                         │
+                         ▼
+                 Build Prompt
+                         │
+                         ▼
+                      AI Model
+                         │
+                         ▼
+                  Final Response
+```
+
+---
+
+## Tech Stack
+
+- Node.js
+- Express.js
+- Redis
+- BullMQ
+- Qdrant
+- Ollama
+- bge-m3 Embedding Model
+
+---
+
+## Embedding Model
+
+The project currently uses
+
+```
+bge-m3
+```
+
+running locally through Ollama.
+
+Embeddings are generated in batches before indexing into Qdrant.
+
+---
+
+## Vector Database
+
+This project uses **Qdrant** as the vector database.
+
+Each indexed point stores
+
+- documentId
+- page
+- chunkIndex
+- text
+- embedding vector
+
+Semantic retrieval is filtered using the uploaded document id before sending the final context to the language model.
+
+---
+
+## Queue Processing
+
+Document ingestion is completely asynchronous.
+
+```
+Upload
+
+↓
+
+Queue
+
+↓
+
+Worker
+
+↓
+
+Embedding
+
+↓
+
+Vector Storage
+```
+
+This keeps upload latency low while heavy AI processing happens in the background.
+
+---
+
+## Environment Variables
+
+Create a `.env` file.
+
+```env
+PORT=2020
+
+BASE_URL=
+
+AI_API_KEY=
+```
+
+---
+
+## Installation
+
+```bash
+npm install
+```
+
+Start Redis
+
+Start Qdrant
+
+Start Ollama
+
+Pull embedding model
+
+```bash
+ollama pull bge-m3
+```
+
+Run the application
+
+```bash
+npm run dev
+```
+
+---
+
+## Testing
+
+A simple terminal client is included.
+
+```
+testNow.js
+```
+
+After starting the server, run
+
+```bash
+node testNow.js
+```
+
+The script
+
+- uploads a PDF
+- waits until processing completes
+- opens an interactive terminal chat
+
+making it easy to test the complete RAG pipeline end-to-end.
+
+---
+
+## Future Improvements
+
+- Docker Compose setup
+- Streaming responses
+- Multi-user authentication
+- Multiple embedding providers
+- Multiple vector database support
+- OCR support for scanned PDFs
+- Hybrid search
+- Metadata filtering
+- Horizontal worker scaling
+- Object storage support (S3, Cloud Storage)
+
+---
+
+## Project Goal
+
+The goal of this project was to build a scalable Retrieval-Augmented Generation (RAG) pipeline instead of only creating a basic PDF chat application.
+
+The focus was on building a production-oriented ingestion pipeline using asynchronous workers, semantic indexing, and vector retrieval that can later be extended for large-scale deployments.
