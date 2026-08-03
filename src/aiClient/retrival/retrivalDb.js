@@ -35,7 +35,6 @@ export async function runChat(id, chat, query) {
   });
 
   const buildSystemPrompt = systemPrompt(data);
-  console.log(buildSystemPrompt);
 
   const aiResponse = await aiChat(buildSystemPrompt, chat);
   if (!aiResponse) {
