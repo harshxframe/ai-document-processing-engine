@@ -10,16 +10,17 @@ export const uploadController = async (req, res) => {
     // Add in redis and add in queue
     const isOK = await addInDB(documentID, "Queued");
     if (!isOK) {
-      res.status(500).send(resfrmt(true, 500, "Failed to register", {}));
+      return res.status(500).send(resfrmt(true, 500, "Failed to register", {}));
     }
     const inQueue = await AIQueue.add("document-queue", { id: documentID });
     if (!inQueue?.id) {
-      res.status(500).send(resfrmt(true, 500, "Failed to queue", {}));
+      return res.status(500).send(resfrmt(true, 500, "Failed to queue", {}));
     }
-    res.send(inQueue?.id);
+    return res.send(
+      resfrmt(false, 200, "Job submited successfully", { jobId: documentID }),
+    );
   } catch (e) {
-    res.status(500).send(resfrmt(true, 500, e.message, {}));
+    return res.status(500).send(resfrmt(true, 500, e.message, {}));
   }
 };
 
-export const chat = async (req, res) => {};

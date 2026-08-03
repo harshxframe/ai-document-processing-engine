@@ -2,8 +2,9 @@ import { QdrantClient } from "@qdrant/js-client-rest";
 import { textParserOP } from "../../utils/testParser.js";
 import { embeddingProvider } from "../embeddings/ollamaEmbedding.js";
 import { getUniqueId } from "../../utils/idGenerator.js";
+import { Quadclient } from "../../job/quadrantClient.js";
 
-const client = new QdrantClient({ host: "localhost", port: 6333 });
+const client = Quadclient;
 
 export async function textEmbedding(id) {
   try {

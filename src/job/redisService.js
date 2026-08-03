@@ -11,3 +11,12 @@ export async function addInDB(id, status) {
 export async function changeStatus(id, status) {
   await redisClient.set(id, status);
 } 
+
+
+export async function  getStatus(id) {
+  const data = await redisClient.get(id);
+  if(data){
+    return data;
+  }
+  return false;
+}

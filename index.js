@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import uploadRouter from "./src/route/upload.js";
 import { globalErrorHandle } from "./src/middleware/gloErrorHandle.js";
+import chatRouter from "./src/route/chat.js";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 
 app.use("/app", uploadRouter);
+app.use("/app", chatRouter);
 app.get("/health",(req,res)=>{
     res.send("Hello Harsh");
 })
