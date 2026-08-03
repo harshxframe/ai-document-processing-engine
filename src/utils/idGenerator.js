@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
 
 
-export const getUniqueId = randomUUID();
+export const getUniqueId = ()=> (randomUUID());
 

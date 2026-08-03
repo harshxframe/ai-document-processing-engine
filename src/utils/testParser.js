@@ -2,8 +2,9 @@ import fs from "fs/promises";
 import { PDFParse } from "pdf-parse";
 import { cleanPageText } from "./cleanPageText.js";
 import { chunkText } from "./chunkText.js";
+import { textEmbedding } from "../aiClient/vectorDb.js/vectroDb.js";
 
-export async function textParser(filePath) {
+export async function textParserOP(filePath) {
   var parser;
   try {
     const path = `../../uploads/${filePath}.pdf`;
@@ -23,7 +24,6 @@ export async function textParser(filePath) {
       text: cleanPageText(page.text),
     }));
     const chunks = chunkText(pages, 1000, 200);
-    console.log(chunks);
     return chunks;
   } catch (e) {
     throw e;
@@ -34,4 +34,7 @@ export async function textParser(filePath) {
   }
 }
 
-textParser("e7ccb32c-dd5e-45a3-bd85-43906ab97c28");
+//textParser("e7ccb32c-dd5e-45a3-bd85-43906ab97c28");
+
+
+textEmbedding(" ", "92839f96-8381-47aa-bf00-f45ba33ff303");
