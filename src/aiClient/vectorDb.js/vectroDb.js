@@ -5,8 +5,9 @@ import { getUniqueId } from "../../utils/idGenerator.js";
 
 const client = new QdrantClient({ host: "localhost", port: 6333 });
 
-export async function textEmbedding(chunks, id) {
+export async function textEmbedding(id) {
   try {
+    console.time("totalTime");
     const chunks = await textParserOP(id);
 
     const collection = await client.getCollections();
@@ -26,9 +27,7 @@ export async function textEmbedding(chunks, id) {
     const totalBatch = Math.ceil(totalChunks / batch);
     console.log("Chunks:" + totalChunks);
     console.log("Total batch:" + totalBatch);
-    console.time("totalTime");
     for (let i = 0; i < totalBatch; i++) {
-    console.time("embed");
       const batchm = chunks.slice(i * batch, (i + 1) * batch);
       const texts = batchm.map((item) => item.text);
       const embedding = await embeddingProvider(texts);
@@ -44,10 +43,13 @@ export async function textEmbedding(chunks, id) {
         },
       }));
       const dbOperation = await client.upsert("ai_document_proccessed",{wait:true, points:points});
+      if(dbOperation.status != "completed"){
+        throw new Error("Failed to store in Db");
+      }
       console.log(`Batch ${i} saved successfully`)
-      console.timeEnd("embed");
     }
     console.timeEnd("totalTime");
+    return true;
   } catch (e) {
     throw e;
   }

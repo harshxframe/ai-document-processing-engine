@@ -3,16 +3,18 @@ import { PDFParse } from "pdf-parse";
 import { cleanPageText } from "./cleanPageText.js";
 import { chunkText } from "./chunkText.js";
 import { textEmbedding } from "../aiClient/vectorDb.js/vectroDb.js";
+import { UPLOAD_DIR } from "./pathResolver.js";
+import path from "path";
 
-export async function textParserOP(filePath) {
+export async function textParserOP(fileId) {
   var parser;
   try {
-    const path = `../../uploads/${filePath}.pdf`;
-    if (!fs.access(path)) {
+    const filePath = path.join(UPLOAD_DIR, `${fileId}.pdf`);
+    if (!fs.access(filePath)) {
       throw new Error("File does't exsit");
     }
 
-    const buffer = await fs.readFile(path);
+    const buffer = await fs.readFile(filePath);
     parser = new PDFParse({
       data: buffer,
     });
@@ -37,4 +39,4 @@ export async function textParserOP(filePath) {
 //textParser("e7ccb32c-dd5e-45a3-bd85-43906ab97c28");
 
 
-textEmbedding(" ", "92839f96-8381-47aa-bf00-f45ba33ff303");
+//textEmbedding(" ", "92839f96-8381-47aa-bf00-f45ba33ff303");

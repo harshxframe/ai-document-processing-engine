@@ -7,3 +7,7 @@ export async function addInDB(id, status) {
   }
   return false;
 }
+
+export async function changeStatus(id, status) {
+  await redisClient.set(id, status);
+} 
