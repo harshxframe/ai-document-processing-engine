@@ -4,10 +4,12 @@ import { cleanupFile } from "../utils/filecleanup.js";
 import { textParserOP } from "../utils/testParser.js";
 
 export async function embbedPipeline(job) {
-  try {
-    const jobID = job.id;
-    const documentID = job.data?.id;
+  const jobID = job.id;
+  const documentID = job.data?.id;
+  const currentAttempt = job.attemptsMade + 1;
+  const maxAttempts = job.opts.attempts;
 
+  try {
     if (!jobID) {
       throw new Error("Missing job ID");
     }
@@ -17,13 +19,17 @@ export async function embbedPipeline(job) {
 
     if (textChunks) {
       await changeStatus(documentID, "completed");
-      await cleanupFile(documentID);
       return;
     }
-
     await changeStatus(documentID, "Failed");
     throw new Error("RAG pipeline failed");
   } catch (e) {
+    await changeStatus(documentID, "Failed");
     throw e;
+  } finally {
+    // If maxAttempts is 3, this triggers on the 3rd and final run
+    if (currentAttempt === maxAttempts) {
+      await cleanupFile(documentID);
+    }
   }
 }
