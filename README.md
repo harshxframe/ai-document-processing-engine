@@ -2,7 +2,7 @@
 
 An asynchronous document processing engine that converts PDF documents into searchable vector embeddings and enables conversational question answering using Retrieval-Augmented Generation (RAG).
 
-The project is built with scalability in mind using a queue-based architecture so that document ingestion and user requests remain independent.
+The project is built with scalability in mind using a queue-based architecture so that document ingestion and user requests remain independent and working.
 
 ---
 
